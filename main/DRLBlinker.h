@@ -17,6 +17,10 @@
 				/*
 					Reset all LEDS
 				*/
+				reset();
+			}
+
+			void reset() {
 				for(uint8_t i = 0; i <= NUM_LEDS; i++) {
 					_leds[i] = CRGB(0, 0, 0);
 				}
