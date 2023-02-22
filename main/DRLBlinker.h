@@ -8,22 +8,36 @@
 		public:
 			const char* DRLName;
 			CRGB _leds[NUM_LEDS];
+			CRGB DRLColor;
+			CRGB BlinkerColor;
 
-			DRLBlinker(const char* name) : DRLName(name) {}	
+			DRLBlinker(const char* name, CRGB color, CRGB blinker_color) : DRLName(name) {
+				setDRLColor(color);
+				setBlinkerColor(blinker_color);
+			}	
 
 			void initialize() {
 				FastLED.addLeds<WS2812, DATA_PIN, GRB>(_leds, NUM_LEDS);
 
-				/*
-					Reset all LEDS
-				*/
 				reset();
+				showDRL();
+			}
+
+			void setDRLColor(CRGB color) {
+				DRLColor = color;
+			}
+
+			void setBlinkerColor(CRGB color) {
+				BlinkerColor = color;
 			}
 
 			void reset() {
-				for(uint8_t i = 0; i <= NUM_LEDS; i++) {
-					_leds[i] = CRGB(0, 0, 0);
-				}
+				fill_solid(_leds, NUM_LEDS, CRGB::Black);
+				FastLED.show();
+			}
+
+			void showDRL() {
+				fill_solid(_leds, NUM_LEDS, DRLColor);
 				FastLED.show();
 			}
 	};
