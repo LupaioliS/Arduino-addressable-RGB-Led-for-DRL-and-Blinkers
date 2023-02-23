@@ -92,6 +92,11 @@
 			void render() {
 				if(animation_active) {
 					EVERY_N_MILLISECONDS(animation_speed) {
+						Serial.print("Animation frame: ");
+						Serial.print(current_frame);
+						Serial.print(", Max frames: ");
+						Serial.println(max_frames);
+
 						for(int i = 0; i < sizeof(current_animation[current_frame].pixels); i++) {
 							switch(current_animation[current_frame].pixels[i].led_index) {
 								case -1: {
@@ -116,10 +121,10 @@
 						}
 					}
 				} else {
-					if(sizeof(current_animation) == 0) {
+					/*if(sizeof(current_animation) == 0) {
 						_leds[0] = CRGB(0, 255, 0);
 						FastLED.show();
-					}
+					}*/
 				}
 			}
 	};

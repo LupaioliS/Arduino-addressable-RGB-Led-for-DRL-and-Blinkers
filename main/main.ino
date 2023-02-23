@@ -4,7 +4,7 @@
 
 
 DRLBlinker<7, LEDS_PER_STRIP> lxDRL("lxDRL", CRGB(255,255,255));
-DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255));
+//DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255));
 
 
 
@@ -43,22 +43,41 @@ DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255));
 };
 */
 
+#define BLINK_FRAMES 7
 
-Frame blink[2] = {
+Frame blink[BLINK_FRAMES] = {
 	new Pixel[2] {
 		RESET,
 		{0, CRGB(255, 35, 0)}
 	},
 	new Pixel[1] {
 		{1, CRGB(255, 35, 0)}
+	},
+	new Pixel[1] {
+		{2, CRGB(255, 35, 0)}
+	},
+	new Pixel[1] {
+		{3, CRGB(255, 35, 0)}
+	},
+	new Pixel[1] {
+		{4, CRGB(255, 35, 0)}
+	},
+	new Pixel[1] {
+		{5, CRGB(255, 35, 0)}
+	},
+	new Pixel[2] {
+		RESET,
+		{6, CRGB(0, 255, 0)}
 	}
 };
 
 
 
 void setup() {
+	Serial.begin(9600);
+
 	lxDRL.initialize();
-	rxDRL.initialize();
+	//rxDRL.initialize();
 
 
 	lxDRL.setupAnimation(blink, 2000);
