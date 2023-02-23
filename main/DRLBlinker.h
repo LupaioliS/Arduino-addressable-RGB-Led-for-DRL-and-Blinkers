@@ -2,14 +2,28 @@
 	#define DRLBlinker_h
 	#include "Arduino.h"
 	#include <FastLED.h>
+	
+	//#define RESET {0, }
 
+	struct Animation {
+		int led_index;
+		int timing;
+		CRGB color;
+	};
 
 	template <uint8_t DATA_PIN, uint16_t NUM_LEDS> class DRLBlinker {
-		public:
-			const char* DRLName;
-			CRGB _leds[NUM_LEDS];
+		private:
 			CRGB DRLColor;
 			CRGB BlinkerColor;
+			CRGB _leds[NUM_LEDS];
+
+			uint16_t animation_speed = 500;
+			bool animation_active = false;
+			uint16_t current_frame = 0;
+
+		public:
+			const char* DRLName;
+		
 
 			DRLBlinker(const char* name, CRGB color, CRGB blinker_color) : DRLName(name) {
 				setDRLColor(color);
@@ -39,6 +53,14 @@
 			void showDRL() {
 				fill_solid(_leds, NUM_LEDS, DRLColor);
 				FastLED.show();
+			}
+
+			void render() {
+				if(animation_active) {
+					EVERY_N_MILLISECONDS(animation_speed) {
+						
+					}
+				}
 			}
 	};
 #endif
