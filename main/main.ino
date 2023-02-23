@@ -3,8 +3,8 @@
 #define LEDS_PER_STRIP 30
 
 
-DRLBlinker<7, LEDS_PER_STRIP> lxDRL("lxDRL", CRGB(255,255,255), CRGB(255, 35, 0));
-DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255), CRGB(255, 35, 0));
+DRLBlinker<7, LEDS_PER_STRIP> lxDRL("lxDRL", CRGB(255,255,255));
+DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255));
 
 
 
@@ -47,6 +47,9 @@ Animation blink[] = {
 void setup() {
 	lxDRL.initialize();
 	rxDRL.initialize();
+
+
+	lxDRL.setupAnimation(blink, 500);
 } 
 
 void loop() {
