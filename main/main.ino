@@ -9,6 +9,7 @@ DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255), CRGB(255, 35, 0)
 
 
 Animation blink[] = {
+	RESET,
 	{0, 0, 	CRGB(255, 35, 0)}, 
 	{1, 0, 	CRGB(255, 35, 0)}, 
 	{2, 0, 	CRGB(255, 35, 0)}, 

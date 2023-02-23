@@ -3,7 +3,7 @@
 	#include "Arduino.h"
 	#include <FastLED.h>
 	
-	//#define RESET {0, }
+	#define RESET {-1, 0, CRGB(0, 0, 0)}
 
 	struct Animation {
 		int led_index;
