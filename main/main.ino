@@ -8,7 +8,7 @@ DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CRGB(255,255,255));
 
 
 
-Animation blink[] = {
+/*Frame singleFrame[] = {
 	RESET,
 	{0, 0, 	CRGB(255, 35, 0)}, 
 	{1, 0, 	CRGB(255, 35, 0)}, 
@@ -41,6 +41,18 @@ Animation blink[] = {
 	{28, 0, CRGB(255, 35, 0)},
 	{29, 0, CRGB(255, 35, 0)}
 };
+*/
+
+
+Frame blink[2] = {
+	new Pixel[2] {
+		RESET,
+		{0, CRGB(255, 35, 0)}
+	},
+	new Pixel[1] {
+		{1, CRGB(255, 35, 0)}
+	}
+};
 
 
 
@@ -49,7 +61,7 @@ void setup() {
 	rxDRL.initialize();
 
 
-	lxDRL.setupAnimation(blink, 500);
+	lxDRL.setupAnimation(blink, 2000);
 } 
 
 void loop() {
