@@ -40,7 +40,7 @@
 				FastLED.addLeds<WS2812, DATA_PIN, GRB>(_leds, NUM_LEDS);
 
 				reset();
-				showDRL();
+				//showDRL();
 			}
 
 			void setDRLColor(CRGB color) {
