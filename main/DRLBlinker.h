@@ -2,20 +2,26 @@
 	#define DRLBlinker_h
 	#include "Arduino.h"
 	#include <FastLED.h>
-	
-	#define RESET {-1, CRGB(0, 0, 0)}
 
+
+	//#define NUM_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, N, ...) N
+	//#define COUNT_ARGS(...) NUM_ARGS_(__VA_ARGS__, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+	#define RESET {1000, CRGB(0, 0, 0)}
+	#define PIXEL(n, r, g, b) {n, CRGB(r, g, b)}
+	#define FRAME(N, PX...) {N, new Pixel[N] { PX }}
+	
 	struct Pixel {
 		uint16_t led_index;
 		CRGB color;
 	};
 
 	struct Frame {
+		int frame_size;
 		Pixel* pixels;
 		//int delay;
 	};
 
-	//std::vector<Frame> frames;
 
 	template <uint8_t DATA_PIN, uint16_t NUM_LEDS> class DRLBlinker {
 		private:
@@ -40,7 +46,7 @@
 				FastLED.addLeds<WS2812, DATA_PIN, GRB>(_leds, NUM_LEDS);
 
 				reset();
-				//showDRL();
+				showDRL();
 			}
 
 			void setDRLColor(CRGB color) {
@@ -65,10 +71,10 @@
 				}
 			}
 
-			void setupAnimation(Frame animation[], uint16_t speed) {
+			void setupAnimation(Frame* animation, uint16_t animation_size, uint16_t speed) {
 				animation_speed = speed;
 				current_animation = animation;
-				max_frames = sizeof(animation);
+				max_frames = animation_size;
 			}
 
 			void startAnimation() {
@@ -79,7 +85,6 @@
 			void stopAnimation() {
 				current_frame = 0;
 				animation_active = false;
-				deleteAnimationMemory();
 			}
 
 			void deleteAnimationMemory() {
@@ -92,14 +97,9 @@
 			void render() {
 				if(animation_active) {
 					EVERY_N_MILLISECONDS(animation_speed) {
-						Serial.print("Animation frame: ");
-						Serial.print(current_frame);
-						Serial.print(", Max frames: ");
-						Serial.println(max_frames);
-
-						for(int i = 0; i < sizeof(current_animation[current_frame].pixels); i++) {
+						for(int i = 0; i < current_animation[current_frame].frame_size; i++) {
 							switch(current_animation[current_frame].pixels[i].led_index) {
-								case -1: {
+								case 1000: {
 									reset();
 									break;
 								}
@@ -116,7 +116,6 @@
 						if(next_frame == -1) {
 							stopAnimation();
 						} else {
-							//if(current_animation[current_frame].delay != 0) delay(current_animation[current_frame].delay);
 							current_frame = next_frame;
 						}
 					}
