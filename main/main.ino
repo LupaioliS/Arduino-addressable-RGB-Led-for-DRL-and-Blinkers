@@ -142,27 +142,7 @@ Frame blink[BLINK_FRAMES] = {
 };
 
 
-/*
-#define REP0(X)
-#define REP1(X...) X
-#define REP2(X...) REP1(X), X
-#define REP3(X...) REP2(X), X
-#define REP4(X...) REP3(X), X
-#define REP5(X...) REP4(X), X
-#define REP6(X...) REP5(X), X
-#define REP7(X...) REP6(X), X
-#define REP8(X...) REP7(X), X
-#define REP9(X...) REP8(X), X
-#define REP10(X...) REP9(X), X
-
-
-#define REP(HUNDREDS,TENS,ONES,X) \
-  REP##HUNDREDS(REP10(REP10(X))) \
-  REP##TENS(REP10(X)) \
-  REP##ONES(X)*/
-
-
-#define STARTUP_FRAMES 14
+#define STARTUP_FRAMES 18
 Frame startup[STARTUP_FRAMES] = {
 	FRAME(
 		2,
@@ -171,237 +151,103 @@ Frame startup[STARTUP_FRAMES] = {
 	),
 	FRAME(
 		3,
+		ALL_RESET,
 		PIXEL(14, 213, 255, 255),
-		PIXEL(15, 0, 0, 50),
 		PIXEL(16, 213, 255, 255)
 	),
 	FRAME(
-		5,
+		3,
+		ALL_RESET,
 		PIXEL(13, 213, 255, 255),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
 		PIXEL(17, 213, 255, 255)
 	),
 	FRAME(
-		7,
+		3,
+		ALL_RESET,
 		PIXEL(12, 213, 255, 255),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
 		PIXEL(18, 213, 255, 255)
 	),
 	FRAME(
-		9,
+		3,
+		ALL_RESET,
 		PIXEL(11, 213, 255, 255),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
 		PIXEL(19, 213, 255, 255)
 	),
 	FRAME(
-		11,
+		3,
+		ALL_RESET,
 		PIXEL(10, 213, 255, 255),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
 		PIXEL(20, 213, 255, 255)
 	),
 	FRAME(
-		13,
+		3,
+		ALL_RESET,
 		PIXEL(9, 213, 255, 255),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
 		PIXEL(21, 213, 255, 255)
 	),
 	FRAME(
-		15,
+		3,
+		ALL_RESET,
 		PIXEL(8, 213, 255, 255),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
 		PIXEL(22, 213, 255, 255)
 	),
 	FRAME(
-		17,
+		3,
+		ALL_RESET,
 		PIXEL(7, 213, 255, 255),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
 		PIXEL(23, 213, 255, 255)
 	),
 	FRAME(
-		19,
+		3,
+		ALL_RESET,
 		PIXEL(6, 213, 255, 255),
-		PIXEL(7, 0, 0, 50),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
-		PIXEL(23, 0, 0, 50),
 		PIXEL(24, 213, 255, 255)
 	),
 	FRAME(
-		21,
+		3,
+		ALL_RESET,
 		PIXEL(5, 213, 255, 255),
-		PIXEL(6, 0, 0, 50),
-		PIXEL(7, 0, 0, 50),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
-		PIXEL(23, 0, 0, 50),
-		PIXEL(24, 0, 0, 50),
 		PIXEL(25, 213, 255, 255)
 	),
 	FRAME(
-		23,
+		3,
+		ALL_RESET,
 		PIXEL(4, 213, 255, 255),
-		PIXEL(5, 0, 0, 50),
-		PIXEL(6, 0, 0, 50),
-		PIXEL(7, 0, 0, 50),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
-		PIXEL(23, 0, 0, 50),
-		PIXEL(24, 0, 0, 50),
-		PIXEL(25, 0, 0, 50),
 		PIXEL(26, 213, 255, 255)
 	),
 	FRAME(
-		25,
+		3,
+		ALL_RESET,
 		PIXEL(3, 213, 255, 255),
-		PIXEL(4, 0, 0, 50),
-		PIXEL(5, 0, 0, 50),
-		PIXEL(6, 0, 0, 50),
-		PIXEL(7, 0, 0, 50),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
-		PIXEL(23, 0, 0, 50),
-		PIXEL(24, 0, 0, 50),
-		PIXEL(25, 0, 0, 50),
-		PIXEL(26, 0, 0, 50),
 		PIXEL(27, 213, 255, 255)
 	),
 	FRAME(
-		27,
+		3,
+		ALL_RESET,
 		PIXEL(2, 213, 255, 255),
-		PIXEL(3, 0, 0, 50),
-		PIXEL(4, 0, 0, 50),
-		PIXEL(5, 0, 0, 50),
-		PIXEL(6, 0, 0, 50),
-		PIXEL(7, 0, 0, 50),
-		PIXEL(8, 0, 0, 50),
-		PIXEL(9, 0, 0, 50),
-		PIXEL(10, 0, 0, 50),
-		PIXEL(11, 0, 0, 50),
-		PIXEL(12, 0, 0, 50),
-		PIXEL(13, 0, 0, 50),
-		PIXEL(14, 0, 0, 50),
-		PIXEL(15, 0, 0, 50),
-		PIXEL(16, 0, 0, 50),
-		PIXEL(17, 0, 0, 50),
-		PIXEL(18, 0, 0, 50),
-		PIXEL(19, 0, 0, 50),
-		PIXEL(20, 0, 0, 50),
-		PIXEL(21, 0, 0, 50),
-		PIXEL(22, 0, 0, 50),
-		PIXEL(23, 0, 0, 50),
-		PIXEL(24, 0, 0, 50),
-		PIXEL(25, 0, 0, 50),
-		PIXEL(26, 0, 0, 50),
-		PIXEL(27, 0, 0, 50),
 		PIXEL(28, 213, 255, 255)
+	),
+	FRAME(
+		3,
+		ALL_RESET,
+		PIXEL(1, 213, 255, 255),
+		PIXEL(29, 213, 255, 255)
+	),
+	FRAME(
+		3,
+		ALL_RESET,
+		PIXEL(0, 213, 255, 255),
+		PIXEL(30, 213, 255, 255)
+	),
+	FRAME(
+		3,
+		PIXEL(0, 213, 255, 255),
+		PIXEL(30, 213, 255, 255)
+	),
+	FRAME(
+		3,
+		PIXEL(0, 213, 255, 255),
+		PIXEL(30, 213, 255, 255)
 	)
 };
 

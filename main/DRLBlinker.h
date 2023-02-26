@@ -8,7 +8,7 @@
 	//#define COUNT_ARGS(...) NUM_ARGS_(__VA_ARGS__, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 
 	#define ALL_RESET {1000, CHSV(0, 0, 0)}
-	#define ALL_FADEOUT {1001, CHSV(0, 0, 0)}
+
 	#define PIXEL(n, r, g, b) {n, CHSV(r, g, b)}
 	#define FRAME(N, PX...) {N, new Pixel[N] { PX }}
 	
@@ -122,11 +122,8 @@
 									reset();
 									break;
 								}
-								case 1001: { //ALL_FADEOUT
-									reset();
-									break;
-								}
 								default: {
+									/*CHSV currentColor = rgb2hsv_approximate(_leds[current_animation[current_frame].pixels[i].led_index - 1001]);*/
 									_leds[current_animation[current_frame].pixels[i].led_index] = current_animation[current_frame].pixels[i].color;
 									break;
 								}
@@ -142,32 +139,6 @@
 							current_frame = next_frame;
 						}
 					}
-
-					/*EVERY_N_MILLISECONDS(animation_speed) {
-						Serial.print("animation speed: ");
-						Serial.println(animation_speed);
-						for(int i = 0; i < current_animation[current_frame].frame_size; i++) {
-							switch(current_animation[current_frame].pixels[i].led_index) {
-								case 1000: {
-									reset();
-									break;
-								}
-								default: {
-									_leds[current_animation[current_frame].pixels[i].led_index] = current_animation[current_frame].pixels[i].color;
-									break;
-								}
-							}
-						}
-
-						FastLED.show();
-
-						const uint16_t next_frame = nextFrameIndex();
-						if(next_frame == -1) {
-							stopAnimation();
-						} else {
-							current_frame = next_frame;
-						}
-					}*/
 				}
 			}
 	};
