@@ -20,4 +20,4 @@ jobs:
           sketch-paths: |
             - ./
           libraries: |
-            -
+            - name: FastLED
