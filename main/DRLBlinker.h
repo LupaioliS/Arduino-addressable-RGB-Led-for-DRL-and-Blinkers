@@ -9,7 +9,7 @@
 
 	#define ALL_RESET {1000, CHSV(0, 0, 0)}
 
-	#define PIXEL(n, r, g, b) {n, CHSV(r, g, b)}
+	#define PIXEL(n, h, s, v) {n, CHSV(h, s, v)}
 	#define FRAME(N, PX...) {N, new Pixel[N] { PX }}
 	
 	struct Pixel {
