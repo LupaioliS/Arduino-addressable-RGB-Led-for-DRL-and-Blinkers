@@ -2,6 +2,7 @@
 	#define DRLBlinker_h
 	#include "Arduino.h"
 	#include <FastLED.h>
+	#include <arduino-timer.h>
 
 
 	//#define NUM_ARGS_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, N, ...) N
@@ -23,11 +24,21 @@
 		//int delay;
 	};
 
+	struct TimerStruct {
+		void *p;
+		int type;
+		uint16_t led_index;
+		int to;
+	};
 
 	template <uint8_t DATA_PIN, uint16_t NUM_LEDS> class DRLBlinker {
 		private:
 			CHSV DRLColor;
 			CRGB _leds[NUM_LEDS];
+
+			bool leds_busy[NUM_LEDS];
+			bool leds_busy_setter[NUM_LEDS];
+			bool leds_handled[NUM_LEDS];
 
 			uint16_t animation_speed = 500;
 			uint16_t current_frame = 0;
@@ -35,11 +46,22 @@
 			Frame* current_animation;
 			int current_animation_id;
 			volatile unsigned long last_frame_time;
-			void (*onAnimationEnd)(int);
+			void (*onAnimationEnd)(int);			
 
 		public:
 			const char* DRLName;
 			bool animation_active = false;
+			int animation_busy = 0;
+
+			uint16_t drlDim_currentValue = 0;
+
+		    /*
+			 * Timer Test
+			 * 
+		     */
+			Timer<2, millis, TimerStruct*> timer;
+			Timer<NUM_LEDS, millis> LED_DIM_timer;
+
 
 			DRLBlinker(const char* name, CHSV color) : DRLName(name) {
 				setDRLColor(color);
@@ -65,11 +87,20 @@
 
 			void showDRL() {
 				Serial.println("showDRL");
-				for(int i = 0; i < DRLColor.value; i++) {
+
+				drlDim_currentValue = 1;
+				static TimerStruct drlDim_TimerStruct;
+				drlDim_TimerStruct.p = this;
+				drlDim_TimerStruct.type = 1;
+				timer.every(5, drlDim_Lambda, &drlDim_TimerStruct);				
+
+				//timer.every(10, timerHandler, &t_struct);
+
+				/*for(int i = 0; i < DRLColor.value; i++) {
 					if(animation_active == true) break;
 					fill_solid(_leds, NUM_LEDS, CHSV(DRLColor.hue, DRLColor.saturation, i));
 					FastLED.show();
-				}
+				}*/
 			}
 
 			uint16_t nextFrameIndex() {
@@ -82,7 +113,7 @@
 
 			void setupAnimation(int animationID, Frame* animation, uint16_t animation_size, uint16_t speed) {
 				Serial.println("setupAnimation");
-				deleteAnimationMemory();
+				//deleteAnimationMemory();
 				animation_speed = speed;
 				current_animation = animation;
 				max_frames = animation_size;
@@ -110,10 +141,185 @@
 				delete current_animation;
 			}
 
-			void render() {
-				volatile unsigned long currentTime = millis();
+			static bool drlDim_Lambda(TimerStruct *timerStruct) {
+				DRLBlinker *ptr = (DRLBlinker *)timerStruct->p;				
+				switch(timerStruct->type) {
+					case 1: { //Dim UP						
+						return ptr->DRLdimUp();
+					}
+					case 2: { //Dim DOWN
+						return ptr->DRLdimDown();
+					}
+				}				
+		    }
+			bool DRLdimUp() {	
+ 				if(animation_active == true) {
+ 					Serial.println("drlDim: Ended for animation_active");
+ 					return false;
+ 				}
+				fill_solid(_leds, NUM_LEDS, CHSV(DRLColor.hue, DRLColor.saturation, drlDim_currentValue));
+				FastLED.show();
 
-				if(animation_active) {
+				drlDim_currentValue++;
+				/* Max DRL Value */
+				if(drlDim_currentValue >= DRLColor.value) {
+					Serial.println("drlDim: Ended for drlDim_currentValue");
+					fill_solid(_leds, NUM_LEDS, CHSV(DRLColor.hue, DRLColor.saturation, DRLColor.value));
+					FastLED.show();
+					return false;
+				}
+				return true;
+			}
+			bool DRLdimDown() {	
+ 				if(animation_active == true) {
+ 					return false;
+ 				}
+				fill_solid(_leds, NUM_LEDS, CHSV(DRLColor.hue, DRLColor.saturation, drlDim_currentValue));
+				FastLED.show();
+
+				drlDim_currentValue--;
+				/* Max DRL Value */
+				if(drlDim_currentValue <= 0) {
+					fill_solid(_leds, NUM_LEDS, CHSV(DRLColor.hue, DRLColor.saturation, DRLColor.value));
+					FastLED.show();
+					return false;
+				}
+				return true;
+			}
+
+			/************************************************************************/
+			static bool singleLedDimDown_Lambda(void *p) {
+				DRLBlinker *ptr = (DRLBlinker *)p;					
+				return ptr->singleLedDimDown();
+		    }
+		    bool singleLedDimDown() {
+		    	int led_index = -1;
+		    	int busy_leds = 0;
+		    	int handled_leds = 0;
+
+		    	for(int i = 0; i < NUM_LEDS; i++) {
+		    		if(leds_busy[i] == true) {
+		    			busy_leds++;
+		    		}
+		    		if(leds_handled[i] == true) {
+		    			handled_leds++;
+		    		}				
+				}	
+				for(int i = 0; i < NUM_LEDS; i++) {
+					if(leds_busy[i] == true && leds_handled[i] == false) {
+						led_index = i;
+						leds_handled[i] = true;
+						break;
+					}
+				}	
+
+				/*Serial.print("singleLedDimDown: busy leds count ");
+				Serial.println(busy_leds);
+
+				Serial.print("singleLedDimDown: handled leds count ");
+				Serial.println(handled_leds);*/
+
+				if(led_index != -1) {
+					/*Serial.print("singleLedDimDown: handling led ");
+					Serial.println(led_index);*/
+
+					CHSV currentColor = rgb2hsv_approximate(_leds[led_index]);				
+
+					if(currentColor.value > 128) {
+	 					int newValue = currentColor.value - 2;
+
+	 					_leds[led_index] = CHSV(currentColor.hue, currentColor.saturation, newValue);
+	 					FastLED.show();
+	 					if(busy_leds == handled_leds + 1) {
+	 						//Serial.println("singleLedDimDown: All leds are handled, resetting handling ");
+	 						for(int i = 0; i < NUM_LEDS; i++) {
+								leds_handled[i] = false;
+							}
+	 					}
+	 					return true;
+	 				} else {
+	 					animation_busy--;
+	 					leds_busy[led_index] = false;
+	 					for(int i = 0; i < NUM_LEDS; i++) {
+							leds_handled[i] = false;
+						}
+	 					/*Serial.print("singleLedDimDown: led animation over for led ");
+						Serial.println(led_index);*/
+	 					return false;
+	 				}
+				}			
+			}			
+			/************************************************************************/
+			/************************************************************************/
+			static bool singleLedDimUp_Lambda(void *p) {
+				DRLBlinker *ptr = (DRLBlinker *)p;					
+				return ptr->singleLedDimUp();
+		    }
+		    bool singleLedDimUp() {
+		    	int led_index = -1;
+		    	int busy_leds = 0;
+		    	int handled_leds = 0;
+
+		    	for(int i = 0; i < NUM_LEDS; i++) {
+		    		if(leds_busy[i] == true) {
+		    			busy_leds++;
+		    		}
+		    		if(leds_handled[i] == true) {
+		    			handled_leds++;
+		    		}				
+				}	
+				for(int i = 0; i < NUM_LEDS; i++) {
+					if(leds_busy[i] == true && leds_handled[i] == false) {
+						led_index = i;
+						leds_handled[i] = true;
+						break;
+					}
+				}	
+
+				/*Serial.print("singleLedDimDown: busy leds count ");
+				Serial.println(busy_leds);
+
+				Serial.print("singleLedDimDown: handled leds count ");
+				Serial.println(handled_leds);*/
+
+				if(led_index != -1) {
+					/*Serial.print("singleLedDimDown: handling led ");
+					Serial.println(led_index);*/
+
+					CHSV currentColor = rgb2hsv_approximate(_leds[led_index]);				
+
+					if(currentColor.value < 255) {
+	 					int newValue = currentColor.value + 2;
+
+	 					_leds[led_index] = CHSV(currentColor.hue, currentColor.saturation, newValue);
+	 					FastLED.show();
+	 					if(busy_leds == handled_leds + 1) {
+	 						//Serial.println("singleLedDimDown: All leds are handled, resetting handling ");
+	 						for(int i = 0; i < NUM_LEDS; i++) {
+								leds_handled[i] = false;
+							}
+	 					}
+	 					return true;
+	 				} else {
+	 					animation_busy--;
+	 					leds_busy[led_index] = false;
+	 					for(int i = 0; i < NUM_LEDS; i++) {
+							leds_handled[i] = false;
+						}
+	 					/*Serial.print("singleLedDimDown: led animation over for led ");
+						Serial.println(led_index);*/
+	 					return false;
+	 				}
+				}			
+			}			
+			/************************************************************************/
+
+			void render() {
+				timer.tick();
+				LED_DIM_timer.tick();
+
+				volatile unsigned long currentTime = millis();
+				if(animation_active) {					
 					if(currentTime - last_frame_time > animation_speed) {
 						last_frame_time = currentTime;
 						for(int i = 0; i < current_animation[current_frame].frame_size; i++) {
@@ -123,21 +329,54 @@
 									break;
 								}
 								default: {
-									/*CHSV currentColor = rgb2hsv_approximate(_leds[current_animation[current_frame].pixels[i].led_index - 1001]);*/
-									_leds[current_animation[current_frame].pixels[i].led_index] = current_animation[current_frame].pixels[i].color;
-									break;
+									if(current_animation[current_frame].pixels[i].led_index > 1000 && current_animation[current_frame].pixels[i].led_index < 1001 + NUM_LEDS) { //Single led Dimdown
+										if(leds_busy_setter[current_animation[current_frame].pixels[i].led_index - 1001] == true) break;																		
+										leds_busy_setter[current_animation[current_frame].pixels[i].led_index - 1001] = true;
+										leds_busy[current_animation[current_frame].pixels[i].led_index - 1001] = true;
+										leds_handled[current_animation[current_frame].pixels[i].led_index - 1001] = false;
+
+										animation_busy++;
+
+										Serial.print("singleLedDimDown for led: ");
+										Serial.println(current_animation[current_frame].pixels[i].led_index - 1001);
+
+										LED_DIM_timer.every(5, singleLedDimDown_Lambda, this);	
+										break;
+									} else if(current_animation[current_frame].pixels[i].led_index > 2000 && current_animation[current_frame].pixels[i].led_index < 2001 + NUM_LEDS) { //Single led Dimup
+										if(leds_busy_setter[current_animation[current_frame].pixels[i].led_index - 2001] == true) break;																		
+										leds_busy_setter[current_animation[current_frame].pixels[i].led_index - 2001] = true;
+										leds_busy[current_animation[current_frame].pixels[i].led_index - 2001] = true;
+										leds_handled[current_animation[current_frame].pixels[i].led_index - 2001] = false;
+
+										animation_busy++;
+
+										Serial.print("singleLedDimUp for led: ");
+										Serial.println(current_animation[current_frame].pixels[i].led_index - 2001);
+
+										LED_DIM_timer.every(5, singleLedDimUp_Lambda, this);	
+										break;
+									} else {
+										_leds[current_animation[current_frame].pixels[i].led_index] = current_animation[current_frame].pixels[i].color;
+										break;
+									}									
 								}
 							}
 						}
 
 						FastLED.show();
-
-						const uint16_t next_frame = nextFrameIndex();
-						if(next_frame == -1) {
-							stopAnimation();
-						} else {
-							current_frame = next_frame;
-						}
+						if(animation_busy == 0) {
+							const uint16_t next_frame = nextFrameIndex();
+							for(int i = 0; i < NUM_LEDS; i++) {
+								leds_busy_setter[i] = false;
+								leds_busy[i] = false;
+								leds_handled[i] = false;
+							}
+							if(next_frame == -1) {
+								stopAnimation();
+							} else {
+								current_frame = next_frame;
+							}
+						}						
 					}
 				}
 			}
