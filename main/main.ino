@@ -3,8 +3,8 @@
 #define LEDS_PER_STRIP 31
 
 
-DRLBlinker<7, LEDS_PER_STRIP> lxDRL("lxDRL", CHSV(0, 0, 40));
-DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CHSV(0, 0, 40));
+DRLBlinker<7, LEDS_PER_STRIP> lxDRL("lxDRL", CHSV(0, 0, 255));
+DRLBlinker<8, LEDS_PER_STRIP> rxDRL("rxDRL", CHSV(0, 0, 255));
 
 
 #define BLINK_FRAMES 32
@@ -141,7 +141,7 @@ Frame blink[BLINK_FRAMES] = {
 };
 
 
-#define STARTUP_FRAMES 20
+#define STARTUP_FRAMES 19
 Frame startup[STARTUP_FRAMES] = {
 	FRAME(
 		2,
@@ -252,12 +252,12 @@ Frame startup[STARTUP_FRAMES] = {
 		2,
 		PIXEL(1001, 0, 0, 0),
 		PIXEL(1031, 0, 0, 0)
-	),
-	FRAME(
+	)
+	/*FRAME(
 		2,
 		PIXEL(2001, 0, 0, 0),
 		PIXEL(2031, 0, 0, 0)
-	)
+	)*/
 };
 
 int val;
@@ -286,18 +286,24 @@ void onAnimationEnd_LX(int animationId) {
 	Serial.println(" ended");
 
 	switch(animationId) {
+		case 0: { //DRL Dimup
+			DRLAccesa = true;
+			break;
+		}
+		case 1: { //DRL Dimdown
+			break;
+		} 
 		case 16: { //startup
 			//lxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 60);
 			//lxDRL.startAnimation(16);
 			lxDRL.setupAnimation(17, blink, BLINK_FRAMES, 30);
-			lxDRL.startAnimation(17);
-			/*lxDRL.showDRL();
-			DRLAccesa = true;*/
+			//lxDRL.startAnimation(17);
+			lxDRL.showDRL();			
 			break;
 		}
 		case 17: {
-			lxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 60);
-			lxDRL.startAnimation(16);
+			/*lxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 60);
+			lxDRL.startAnimation(16);*/
 			break;
 		}
 	}
@@ -310,8 +316,8 @@ void onAnimationEnd_RX(int animationId) {
 
 	switch(animationId) {
 		case 16: { //startup
-			rxDRL.setupAnimation(17, blink, BLINK_FRAMES, 30);
-			rxDRL.showDRL();
+			//rxDRL.setupAnimation(17, blink, BLINK_FRAMES, 30);
+			//rxDRL.showDRL();
 			break;
 		}
 	}
@@ -319,35 +325,30 @@ void onAnimationEnd_RX(int animationId) {
 
 
 void loop() {
-	val = digitalRead(5); //1
+	val = digitalRead(5);
 
-  	currentTime = millis(); //3000
+  	currentTime = millis();
   	
-  	//3110 - 3000 = 110 > 100 si
   	if(currentTime - blinkTime > 100) {
 		if(val == LOW && blinkState == false) {
 			blinkState = true;
 			DRLAccesa = false;
-			//Serial.println("ACCESO");
 			blinkTime = currentTime;
 			lxDRL.startAnimation(17);
 			rxDRL.startAnimation(17);
 		} else if(val == HIGH && blinkState == true) {
 			blinkState = false;
-			DRLAccesa = false;
-			//Serial.println("SPENTO");
-			//blinkTime = currentTime;
-			//lxDRL.stopAnimation();
+			//DRLAccesa = false;
 		}
   	}
 
   	if(currentTime - blinkTime > BLINK_FRAMES * 40 && DRLAccesa == false && val == HIGH) {
-  		//Serial.println("FERMO DA TROPPO");
+  		Serial.println("FERMO DA TROPPO");
   		DRLAccesa = true;
-  		/*lxDRL.reset();
+  		lxDRL.reset();
   		lxDRL.showDRL();
 
-  		rxDRL.reset();
+  		/*rxDRL.reset();
   		rxDRL.showDRL();*/
   	}
 	
