@@ -144,97 +144,81 @@ Frame blink[BLINK_FRAMES] = {
 #define STARTUP_FRAMES 19
 Frame startup[STARTUP_FRAMES] = {
 	FRAME(
-		2,
-		ALL_RESET,
+		1,
 		PIXEL(15, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(14, 213, 255, 255),
 		PIXEL(16, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(13, 213, 255, 255),
 		PIXEL(17, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(12, 213, 255, 255),
 		PIXEL(18, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(11, 213, 255, 255),
 		PIXEL(19, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(10, 213, 255, 255),
 		PIXEL(20, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(9, 213, 255, 255),
 		PIXEL(21, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(8, 213, 255, 255),
 		PIXEL(22, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(7, 213, 255, 255),
 		PIXEL(23, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(6, 213, 255, 255),
 		PIXEL(24, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(5, 213, 255, 255),
 		PIXEL(25, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(4, 213, 255, 255),
 		PIXEL(26, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(3, 213, 255, 255),
 		PIXEL(27, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(2, 213, 255, 255),
 		PIXEL(28, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(1, 213, 255, 255),
 		PIXEL(29, 213, 255, 255)
 	),
 	FRAME(
-		3,
-		ALL_RESET,
+		2,
 		PIXEL(0, 213, 255, 255),
 		PIXEL(30, 213, 255, 255)
 	),
@@ -272,11 +256,11 @@ void setup() {
   	pinMode(5, INPUT);
 
 	lxDRL.initialize(&onAnimationEnd_LX);
-	lxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 60);
+	lxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 45);
 	lxDRL.startAnimation(16);
 
 	rxDRL.initialize(&onAnimationEnd_RX);
-	rxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 60);
+	rxDRL.setupAnimation(16, startup, STARTUP_FRAMES, 45);
 	rxDRL.startAnimation(16);
 }
 
